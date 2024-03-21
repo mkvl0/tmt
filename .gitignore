@@ -22,3 +22,4 @@ go.work
 
 # special files of this tool
 cmd/tmt/.tmt.json
+.tmt.json
