@@ -12,7 +12,7 @@ import (
 )
 
 func TestAdd(t *testing.T) {
-	l := make(taskmanager.TasksList)
+	l := taskmanager.NewTasksList()
 
 	newTask := "New task"
 	got := l.Add(newTask)
@@ -27,7 +27,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestComplete(t *testing.T) {
-	l := make(taskmanager.TasksList)
+	l := taskmanager.NewTasksList()
 
 	newTask := l.Add("New task")
 
@@ -45,7 +45,7 @@ func TestComplete(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	l := make(taskmanager.TasksList)
+	l := taskmanager.NewTasksList()
 	tasks := []string{
 		"New task 1",
 		"New task 2",
@@ -74,8 +74,8 @@ func TestDelete(t *testing.T) {
 
 // // tests the Save and Sync methods of the List type
 func TestSaveSync(t *testing.T) {
-	l1 := make(taskmanager.TasksList)
-	l2 := make(taskmanager.TasksList)
+	l1 := taskmanager.NewTasksList()
+	l2 := taskmanager.NewTasksList()
 
 	taskName := "New Task"
 	l1.Add(taskName)

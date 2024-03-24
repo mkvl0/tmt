@@ -21,6 +21,10 @@ type taskItem struct {
 
 type TasksList map[uuid.UUID]taskItem
 
+func NewTasksList() TasksList {
+	return make(TasksList)
+}
+
 func (l TasksList) Add(title string) taskItem {
 	t := taskItem{
 		ID:          uuid.New(),

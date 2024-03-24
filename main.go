@@ -37,7 +37,8 @@ func main() {
 	flag.StringVar(&deleteTask, "delete", "", "Task to delete")
 	flag.Parse()
 
-	l := &taskmanager.TasksList{}
+	l := taskmanager.NewTasksList()
+
 	if err := l.Sync(tasksFileName); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -58,7 +59,7 @@ func main() {
 	}
 }
 
-func handleCompleteTask(ID string, l *taskmanager.TasksList) {
+func handleCompleteTask(ID string, l taskmanager.TasksList) {
 	taskUUID, err := uuid.Parse(ID)
 
 	if err != nil {
@@ -77,12 +78,12 @@ func handleCompleteTask(ID string, l *taskmanager.TasksList) {
 	}
 }
 
-func handleShowList(l *taskmanager.TasksList) {
+func handleShowList(l taskmanager.TasksList) {
 	// list current items to do
 	fmt.Print(l)
 }
 
-func handleAddTask(l *taskmanager.TasksList) {
+func handleAddTask(l taskmanager.TasksList) {
 	newTask, err := getTask(os.Stdin, flag.Args()...)
 
 	if err != nil {
@@ -98,7 +99,7 @@ func handleAddTask(l *taskmanager.TasksList) {
 	}
 }
 
-func handleDeleteTask(ID string, l *taskmanager.TasksList) {
+func handleDeleteTask(ID string, l taskmanager.TasksList) {
 	taskUUID, err := uuid.Parse(ID)
 
 	if err != nil {
