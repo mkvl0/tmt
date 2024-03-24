@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 	"strings"
-	"tmt"
+	"tmt/taskmanager"
 )
 
 var tasksFileName = ".tmt.json"
@@ -32,8 +32,8 @@ func main() {
 	flag.IntVar(&deleteTask, "delete", 0, "Task to delete")
 	flag.Parse()
 
-	l := &tmt.List{}
-	if err := l.Get(tasksFileName); err != nil {
+	l := &taskmanager.TasksList{}
+	if err := l.Sync(tasksFileName); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
@@ -53,7 +53,7 @@ func main() {
 	}
 }
 
-func handleCompleteTask(id int, l *tmt.List) {
+func handleCompleteTask(id int, l *taskmanager.TasksList) {
 	if err := l.Complete(id); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -64,12 +64,12 @@ func handleCompleteTask(id int, l *tmt.List) {
 	}
 }
 
-func handleShowList(l *tmt.List) {
+func handleShowList(l *taskmanager.TasksList) {
 	// list current items to do
 	fmt.Print(l)
 }
 
-func handleAddTask(l *tmt.List) {
+func handleAddTask(l *taskmanager.TasksList) {
 	newTask, err := getTask(os.Stdin, flag.Args()...)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -82,7 +82,7 @@ func handleAddTask(l *tmt.List) {
 	}
 }
 
-func handleDeleteTask(id int, l *tmt.List) {
+func handleDeleteTask(id int, l *taskmanager.TasksList) {
 	if err := l.Delete(id); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

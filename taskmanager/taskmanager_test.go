@@ -1,70 +1,81 @@
-package tmt_test
+package taskmanager_test
 
 import (
+	// "io/ioutil"
+	// "os"
 	"io/ioutil"
 	"os"
 	"testing"
-	"tmt"
+	"tmt/taskmanager"
+
+	"github.com/google/uuid"
 )
 
 func TestAdd(t *testing.T) {
-	l := tmt.List{}
+	l := make(taskmanager.TasksList)
 
 	newTask := "New task"
-	l.Add(newTask)
+	got := l.Add(newTask)
 
 	if len(l) == 0 {
 		t.Errorf("Expected length of 'l' %d but got %d", 1, len(l))
 	}
 
-	if l[0].Task != newTask {
-		t.Errorf("Expected %q but got %q", newTask, l[0].Task)
+	if got.Title != newTask {
+		t.Errorf("Expected %q but got %q", newTask, got.Title)
 	}
 }
 
 func TestComplete(t *testing.T) {
-	l := tmt.List{}
+	l := make(taskmanager.TasksList)
 
-	l.Add("New task")
+	newTask := l.Add("New task")
 
-	if l[0].Done {
+	if newTask.Done {
 		t.Errorf("Task should not be completed")
 	}
 
-	l.Complete(1)
+	l.Complete(newTask.ID)
 
-	if !l[0].Done {
+	completedTask := l[newTask.ID]
+
+	if !completedTask.Done {
 		t.Errorf("Task should be completed")
 	}
 }
 
 func TestDelete(t *testing.T) {
-	l := tmt.List{}
+	l := make(taskmanager.TasksList)
 	tasks := []string{
 		"New task 1",
 		"New task 2",
 		"New task 3",
 	}
 
+	newTaskIds := []uuid.UUID{}
+
 	for _, task := range tasks {
-		l.Add(task)
+		t := l.Add(task)
+		newTaskIds = append(newTaskIds, t.ID)
 	}
 
-	l.Delete(2)
+	l.Delete(newTaskIds[1])
 
 	if len(l) != 2 {
 		t.Errorf("Expected length of list %d but got %d", 2, len(l))
 	}
 
-	if l[1].Task != tasks[2] {
-		t.Errorf("Expected %q but got %q", tasks[2], l[1].Task)
+	_, ok := l[newTaskIds[1]]
+
+	if ok {
+		t.Errorf("Expected %t but got %t", false, ok)
 	}
 }
 
-// tests the Save and Get methods of the List type
-func TestSaveGet(t *testing.T) {
-	l1 := tmt.List{}
-	l2 := tmt.List{}
+// // tests the Save and Sync methods of the List type
+func TestSaveSync(t *testing.T) {
+	l1 := make(taskmanager.TasksList)
+	l2 := make(taskmanager.TasksList)
 
 	taskName := "New Task"
 	l1.Add(taskName)
@@ -81,7 +92,7 @@ func TestSaveGet(t *testing.T) {
 		t.Fatalf("Error saving list to file: %s", err)
 	}
 
-	if err := l2.Get(tf.Name()); err != nil {
+	if err := l2.Sync(tf.Name()); err != nil {
 		t.Fatalf("Error getting list from file: %s", err)
 	}
 }

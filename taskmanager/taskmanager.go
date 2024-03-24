@@ -1,4 +1,4 @@
-package tmt
+package taskmanager
 
 import (
 	"encoding/json"
@@ -7,54 +7,65 @@ import (
 	"io/ioutil"
 	"os"
 	"time"
+
+	"github.com/google/uuid"
 )
 
-type item struct {
-	Task        string
+type taskItem struct {
+	ID          uuid.UUID
+	Title       string
 	Done        bool
 	CreatedAt   time.Time
 	CompletedAt time.Time
 }
 
-type List []item
+type TasksList map[uuid.UUID]taskItem
 
-func (l *List) Add(task string) {
-	t := item{
-		Task:        task,
+func (l TasksList) Add(title string) taskItem {
+	t := taskItem{
+		ID:          uuid.New(),
+		Title:       title,
 		Done:        false,
 		CreatedAt:   time.Now(),
 		CompletedAt: time.Time{},
 	}
 
-	*l = append(*l, t)
+	l[t.ID] = t
+
+	return t
 }
 
 // Complete method doesn't require pointer receiver
 // but its a good practice to keep methods for the same type
 // with the same receiver type
-func (l *List) Complete(i int) error {
-	ls := *l // why?
-	if i <= 0 || i > len(ls) {
-		return fmt.Errorf("Item %d does not exist", i)
+func (l TasksList) Complete(ID uuid.UUID) error {
+	t, ok := l[ID]
+
+	if !ok {
+		return fmt.Errorf("Item with ID %q does not exist", ID)
 	}
-	ls[i-1].Done = true
-	ls[i-1].CompletedAt = time.Now()
+
+	t.Done = true
+	t.CompletedAt = time.Now()
+
+	l[ID] = t
 
 	return nil
 }
 
-func (l *List) Delete(i int) error {
-	ls := *l
-	if i <= 0 || i > len(ls) {
-		return fmt.Errorf("Item %d does not exist", i)
+func (l TasksList) Delete(ID uuid.UUID) error {
+	_, ok := l[ID]
+
+	if !ok {
+		return fmt.Errorf("Item with ID %q does not exist", ID)
 	}
 
-	*l = append(ls[:i-1], ls[i:]...)
+	delete(l, ID)
 
 	return nil
 }
 
-func (l *List) Save(filename string) error {
+func (l *TasksList) Save(filename string) error {
 	js, err := json.Marshal(l)
 	if err != nil {
 		return err
@@ -63,7 +74,7 @@ func (l *List) Save(filename string) error {
 	return ioutil.WriteFile(filename, js, 0644)
 }
 
-func (l *List) Get(filename string) error {
+func (l *TasksList) Sync(filename string) error {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -85,17 +96,19 @@ func (l *List) Get(filename string) error {
 	return nil
 }
 
-func (l *List) String() string {
+func (l TasksList) String() string {
 	formatted := ""
 
-	for i, t := range *l {
+	for _, t := range l {
 		prefix := "  "
+
 		if t.Done {
 			prefix = "X "
 		}
+
 		// 1: First task\n
 		// X 1: Second task\n
-		formatted += fmt.Sprintf("%s%d: %s\n", prefix, i+1, t.Task)
+		formatted += fmt.Sprintf("%s\t%s\t%s\n", prefix, t.ID, t.Title)
 	}
 
 	return formatted
