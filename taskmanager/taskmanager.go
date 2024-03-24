@@ -100,10 +100,10 @@ func (l TasksList) String() string {
 	formatted := ""
 
 	for _, t := range l {
-		prefix := "  "
+		prefix := "[ ]"
 
 		if t.Done {
-			prefix = "X "
+			prefix = "[x]"
 		}
 
 		// 1: First task\n

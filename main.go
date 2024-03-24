@@ -8,6 +8,8 @@ import (
 	"os"
 	"strings"
 	"tmt/taskmanager"
+
+	"github.com/google/uuid"
 )
 
 var tasksFileName = ".tmt.json"
@@ -16,20 +18,23 @@ func main() {
 	if fileNameFromEnv := os.Getenv("TMT_FILENAME_PATH"); fileNameFromEnv != "" {
 		tasksFileName = fileNameFromEnv
 	}
+
 	flag.Usage = func() {
 		output := flag.CommandLine.Output()
 		fmt.Fprintln(output, "tmt (task management tool)")
 		fmt.Fprintln(output, "Usage information: ")
 		flag.PrintDefaults()
 	}
+
 	var addTask bool
 	var list bool
-	var completeTask int
-	var deleteTask int
+	var completeTask string
+	var deleteTask string
+
 	flag.BoolVar(&addTask, "add", false, "Add new task in the list")
 	flag.BoolVar(&list, "list", false, "List all tasks")
-	flag.IntVar(&completeTask, "complete", 0, "Task to complete")
-	flag.IntVar(&deleteTask, "delete", 0, "Task to delete")
+	flag.StringVar(&completeTask, "complete", "", "Task to complete")
+	flag.StringVar(&deleteTask, "delete", "", "Task to delete")
 	flag.Parse()
 
 	l := &taskmanager.TasksList{}
@@ -41,11 +46,11 @@ func main() {
 	switch {
 	case list:
 		handleShowList(l)
-	case completeTask > 0:
+	case completeTask != "":
 		handleCompleteTask(completeTask, l)
 	case addTask:
 		handleAddTask(l)
-	case deleteTask > 0:
+	case deleteTask != "":
 		handleDeleteTask(deleteTask, l)
 	default:
 		fmt.Fprintln(os.Stderr, "Invalid option")
@@ -53,11 +58,19 @@ func main() {
 	}
 }
 
-func handleCompleteTask(id int, l *taskmanager.TasksList) {
-	if err := l.Complete(id); err != nil {
+func handleCompleteTask(ID string, l *taskmanager.TasksList) {
+	taskUUID, err := uuid.Parse(ID)
+
+	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+
+	if err := l.Complete(taskUUID); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
 	if err := l.Save(tasksFileName); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -71,19 +84,29 @@ func handleShowList(l *taskmanager.TasksList) {
 
 func handleAddTask(l *taskmanager.TasksList) {
 	newTask, err := getTask(os.Stdin, flag.Args()...)
+
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+
 	l.Add(newTask)
+
 	if err := l.Save(tasksFileName); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
 
-func handleDeleteTask(id int, l *taskmanager.TasksList) {
-	if err := l.Delete(id); err != nil {
+func handleDeleteTask(ID string, l *taskmanager.TasksList) {
+	taskUUID, err := uuid.Parse(ID)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	if err := l.Delete(taskUUID); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	if err := l.Save(tasksFileName); err != nil {
