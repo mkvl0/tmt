@@ -1,4 +1,4 @@
-package tmt
+package taskmanager
 
 import (
 	"encoding/json"
@@ -90,9 +90,11 @@ func (l *List) String() string {
 
 	for i, t := range *l {
 		prefix := "  "
+
 		if t.Done {
 			prefix = "X "
 		}
+
 		// 1: First task\n
 		// X 1: Second task\n
 		formatted += fmt.Sprintf("%s%d: %s\n", prefix, i+1, t.Task)

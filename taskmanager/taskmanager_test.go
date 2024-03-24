@@ -1,14 +1,14 @@
-package tmt_test
+package taskmanager_test
 
 import (
 	"io/ioutil"
 	"os"
 	"testing"
-	"tmt"
+	"tmt/taskmanager"
 )
 
 func TestAdd(t *testing.T) {
-	l := tmt.List{}
+	l := taskmanager.List{}
 
 	newTask := "New task"
 	l.Add(newTask)
@@ -23,7 +23,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestComplete(t *testing.T) {
-	l := tmt.List{}
+	l := taskmanager.List{}
 
 	l.Add("New task")
 
@@ -39,7 +39,7 @@ func TestComplete(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	l := tmt.List{}
+	l := taskmanager.List{}
 	tasks := []string{
 		"New task 1",
 		"New task 2",
@@ -63,8 +63,8 @@ func TestDelete(t *testing.T) {
 
 // tests the Save and Get methods of the List type
 func TestSaveGet(t *testing.T) {
-	l1 := tmt.List{}
-	l2 := tmt.List{}
+	l1 := taskmanager.List{}
+	l2 := taskmanager.List{}
 
 	taskName := "New Task"
 	l1.Add(taskName)

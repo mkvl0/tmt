@@ -1,4 +1,4 @@
-package main
+package main2
 
 import (
 	"bufio"
@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"tmt"
 )
 
 var tasksFileName = ".tmt.json"
@@ -16,16 +15,19 @@ func main() {
 	if fileNameFromEnv := os.Getenv("TMT_FILENAME_PATH"); fileNameFromEnv != "" {
 		tasksFileName = fileNameFromEnv
 	}
+
 	flag.Usage = func() {
 		output := flag.CommandLine.Output()
 		fmt.Fprintln(output, "tmt (task management tool)")
 		fmt.Fprintln(output, "Usage information: ")
 		flag.PrintDefaults()
 	}
+
 	var addTask bool
 	var list bool
 	var completeTask int
 	var deleteTask int
+
 	flag.BoolVar(&addTask, "add", false, "Add new task in the list")
 	flag.BoolVar(&list, "list", false, "List all tasks")
 	flag.IntVar(&completeTask, "complete", 0, "Task to complete")
@@ -33,6 +35,7 @@ func main() {
 	flag.Parse()
 
 	l := &tmt.List{}
+
 	if err := l.Get(tasksFileName); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
