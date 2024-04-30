@@ -11,6 +11,18 @@ import (
 	"github.com/google/uuid"
 )
 
+func TestNewTasksList(t *testing.T) {
+	tl := taskmanager.NewTasksList()
+
+	if tl == nil {
+		t.Error("Got nil")
+	}
+
+	if len(tl) != 0 {
+		t.Errorf("Expected empty TasksList, but got %d items", len(tl))
+	}
+}
+
 func TestAdd(t *testing.T) {
 	l := taskmanager.NewTasksList()
 
