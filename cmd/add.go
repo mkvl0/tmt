@@ -8,10 +8,12 @@ import (
 )
 
 func newAddCommand(app *App) *cobra.Command {
+	var description string
+
 	cmd := &cobra.Command{
 		Use:   "add",
 		Short: "Creates and adds new task in the list",
-		Args:  cobra.MaximumNArgs(1),
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
 				return
@@ -19,7 +21,7 @@ func newAddCommand(app *App) *cobra.Command {
 
 			newTask := args[0]
 
-			app.State.Add(newTask)
+			app.State.Add(newTask, description, []string{})
 
 			if err := app.State.Save(".tmt.json"); err != nil {
 				fmt.Fprintln(os.Stderr, err)
@@ -27,6 +29,8 @@ func newAddCommand(app *App) *cobra.Command {
 			}
 		},
 	}
+
+	cmd.Flags().StringVarP(&description, "description", "d", "", "Description of new task")
 
 	return cmd
 }

@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -12,19 +12,22 @@ func newCompleteCommand(app *App) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "complete",
 		Short: "Completes the task with specific id",
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
 				return
 			}
 
-			id, err := strconv.Atoi(args[0])
+			id := args[0]
+
+			taskUUID, err := uuid.Parse(id)
 
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
 
-			if err := app.State.Complete(id); err != nil {
+			if err := app.State.Complete(taskUUID); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}

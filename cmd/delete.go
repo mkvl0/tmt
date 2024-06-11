@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -17,14 +17,16 @@ func newDeleteCommand(app *App) *cobra.Command {
 				return
 			}
 
-			id, err := strconv.Atoi(args[0])
+			id := args[0]
+
+			taskUUID, err := uuid.Parse(id)
 
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
 
-			if err := app.State.Delete(id); err != nil {
+			if err := app.State.Delete(taskUUID); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 			}
 

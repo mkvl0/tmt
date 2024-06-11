@@ -1,22 +1,18 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
 	"os"
-	"tmt/taskmanager"
+	"tmt/tm"
 
 	"github.com/spf13/cobra"
 )
 
 type App struct {
 	rootCmd *cobra.Command
-	State   *taskmanager.List
+	State   *tm.TasksList
 }
 
-func NewApp(state *taskmanager.List) *App {
+func NewApp(state *tm.TasksList) *App {
 	app := &App{
 		State: state,
 	}
@@ -39,6 +35,7 @@ func NewApp(state *taskmanager.List) *App {
 	app.rootCmd.AddCommand(newListCommand(app))
 	app.rootCmd.AddCommand(newDeleteCommand(app))
 	app.rootCmd.AddCommand(newCompleteCommand(app))
+	app.rootCmd.AddCommand(newSearchCommand(app))
 
 	return app
 }
