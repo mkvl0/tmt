@@ -2,15 +2,31 @@
 
 **Features**
 
-- add new tasks with ability to set:
+- add new tasks with ability to specify:
   - title
+  - description
   - tags ("programming", "go", "course")
-  - project (maybe)
+  - project
+  - estimate (time)
+  - priority
+  - start_datetime/from_datetime (like in calendar) -- maybe
+  - end_datetime/to_datetime (like in calendar) -- maybe
+  - deadline_datetime -- maybe
+- saving description in markdown format and display it using glow
+- an ability to specify description in vim in markdown format
 - change the status of existing task to
   - "completed"
   - "not started" ("created")
   - "in progress"
   - "deleted" (maybe)
+- update fields of existing task:
+  - title
+  - description
+  - tags
+  - project
+  - estimate
+  - status
+  - priority
 - show details of the existing task:
   - name
   - description
@@ -18,15 +34,30 @@
   - date of status changing (or updated date)
   - tags
   - project
-- show list/table of existing tasks with filter
+  - status
+  - estimate
+  - priority
+- show list/table of existing tasks with filter and sorting
   - filters by:
     - title
     - description (match)
     - tags
     - status
     - created date range (from, to)
-    - date of the status changing (or updated date)
-    - project (maybe)
+    - updated date range (from, to)
+    - project
+    - estimate
+    - priority
+  - sorting by:
+    - title
+    - description (match)
+    - tags
+    - status
+    - created date
+    - updated date
+    - project
+    - estimate
+    - priority
   - fields that are displayed by default:
     - name
     - ID (maybe)
@@ -35,7 +66,16 @@
     - tags
     - status
     - created date
-    - date of the status changing (or updated date)
-    - project (maybe)
-
-
+    - updated date
+    - project
+    - estimate
+    - priority
+- add new project
+  - fields that can be specified: name
+- adding new tags happens when you specify tags while creating/updating task
+- configuration file where user can specify
+  - default project
+  - filtering by default
+  - sorting by default
+- export all data (tasks, projects, tags, etc) as JSON (CSV? XML?)
+- import all data (tasks, projects, tags, etc) as JSON (CSV? XML?)
