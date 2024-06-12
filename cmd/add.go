@@ -9,6 +9,7 @@ import (
 
 func newAddCommand(app *App) *cobra.Command {
 	var description string
+	var tags []string
 
 	cmd := &cobra.Command{
 		Use:   "add",
@@ -19,9 +20,11 @@ func newAddCommand(app *App) *cobra.Command {
 				return
 			}
 
-			newTask := args[0]
+			//newTask := args[0]
 
-			app.State.Add(newTask, description, []string{})
+			fmt.Println("tags", tags)
+
+			//app.State.Tasks.Add(newTask, description, []string{})
 
 			if err := app.State.Save(".tmt.json"); err != nil {
 				fmt.Fprintln(os.Stderr, err)
@@ -30,7 +33,8 @@ func newAddCommand(app *App) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&description, "description", "d", "", "Description of new task")
+	cmd.Flags().StringVarP(&description, "description", "d", "", "Description for new task")
+	cmd.Flags().StringSliceVarP(&tags, "tags", "", []string{}, "Tags for new task")
 
 	return cmd
 }

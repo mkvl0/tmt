@@ -9,10 +9,10 @@ import (
 
 type App struct {
 	rootCmd *cobra.Command
-	State   *tm.TasksList
+	State   *tm.Data
 }
 
-func NewApp(state *tm.TasksList) *App {
+func NewApp(state *tm.Data) *App {
 	app := &App{
 		State: state,
 	}

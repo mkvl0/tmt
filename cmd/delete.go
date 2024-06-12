@@ -26,7 +26,7 @@ func newDeleteCommand(app *App) *cobra.Command {
 				os.Exit(1)
 			}
 
-			if err := app.State.Delete(taskUUID); err != nil {
+			if err := app.State.Tasks.Delete(taskUUID); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 			}
 

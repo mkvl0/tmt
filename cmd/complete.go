@@ -27,7 +27,7 @@ func newCompleteCommand(app *App) *cobra.Command {
 				os.Exit(1)
 			}
 
-			if err := app.State.Complete(taskUUID); err != nil {
+			if err := app.State.Tasks.Complete(taskUUID); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}

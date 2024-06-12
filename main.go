@@ -10,13 +10,13 @@ import (
 var tasksFileName = ".tmt.json"
 
 func main() {
-	l := tm.NewTasksList()
+	d := tm.NewData()
 
-	if err := l.Get(tasksFileName); err != nil {
+	if err := d.Get(tasksFileName); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
-	app := cmd.NewApp(&l)
+	app := cmd.NewApp(&d)
 	app.Execute()
 }

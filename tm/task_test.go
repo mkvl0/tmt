@@ -1,14 +1,13 @@
 package tm_test
 
 import (
-	"os"
 	"testing"
 	"tmt/tm"
 
 	"github.com/google/uuid"
 )
 
-func TestAdd(t *testing.T) {
+func TestAddTask(t *testing.T) {
 	l := tm.NewTasksList()
 
 	newTask := "New task"
@@ -23,7 +22,7 @@ func TestAdd(t *testing.T) {
 	}
 }
 
-func TestComplete(t *testing.T) {
+func TestCompleteTask(t *testing.T) {
 	l := tm.NewTasksList()
 
 	newTask := l.Add("New task", "", []string{})
@@ -41,7 +40,7 @@ func TestComplete(t *testing.T) {
 	}
 }
 
-func TestDelete(t *testing.T) {
+func TestDeleteTask(t *testing.T) {
 	l := tm.NewTasksList()
 	tasks := []string{
 		"New task 1",
@@ -66,30 +65,5 @@ func TestDelete(t *testing.T) {
 
 	if ok {
 		t.Errorf("Expected %t but got %t", false, ok)
-	}
-}
-
-// tests the Save and Get methods of the List type
-func TestSaveGet(t *testing.T) {
-	l1 := tm.TasksList{}
-	l2 := tm.TasksList{}
-
-	taskName := "New Task"
-	l1.Add(taskName, "", []string{})
-
-	// TempFile creates a new temporary file in the directory dir (first parameter)
-	tf, err := os.CreateTemp("", "")
-	defer os.Remove(tf.Name()) // will be executed in the end of the function
-
-	if err != nil {
-		t.Fatalf("Error creating temp file: %s", err)
-	}
-
-	if err := l1.Save(tf.Name()); err != nil {
-		t.Fatalf("Error saving list to file: %s", err)
-	}
-
-	if err := l2.Get(tf.Name()); err != nil {
-		t.Fatalf("Error getting list from file: %s", err)
 	}
 }

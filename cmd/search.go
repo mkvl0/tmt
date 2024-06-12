@@ -19,7 +19,7 @@ func newSearchCommand(app *App) *cobra.Command {
 				searchPattern = args[0]
 			}
 
-			r, err := app.State.Search(searchPattern)
+			r, err := app.State.Tasks.Search(searchPattern)
 
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
